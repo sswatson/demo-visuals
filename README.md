@@ -1,9 +1,6 @@
 
-# Graph Visualization
+# Demo Visuals
 
-To get this visualization running:
+Act 1 contains a graph visualization component.
 
-```
-yarn install
-yarn start
-```
+Act 2 contains a graph visualization as well as an explanatory animation.
