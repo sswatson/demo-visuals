@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 100">
+    <!-- Stick figure body -->
+    <line x1="25" y1="40" x2="25" y2="70" stroke="black" />
+
+    <!-- Stick figure legs -->
+    <line x1="25" y1="70" x2="20" y2="90" stroke="black" />
+    <line x1="25" y1="70" x2="30" y2="90" stroke="black" />
+
+    <!-- Stick figure arms -->
+    <line x1="25" y1="50" x2="15" y2="60" stroke="black" />
+    <line x1="25" y1="50" x2="35" y2="60" stroke="black" />
+
+    <!-- Stick figure head -->
+    <circle cx="25" cy="30" r="10" stroke="black" fill="transparent" />
+
+    <!-- Phone in hand -->
+    <rect x="35" y="50" width="10" height="15" 
+    stroke="black" fill="transparent"/>
+</svg>
