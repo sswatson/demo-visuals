@@ -1,9 +1,13 @@
 import "./styles.css";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { raw_data as _raw_data } from "./telecom";
 import ForceGraph3D from "react-force-graph-3d";
 import SpriteText from "three-spritetext";
 import styled from "styled-components";
+import * as THREE from 'three';
+
+const RELATIONALAI_BLUE = '#090F4A';
+const RELATIONALAI_ORANGE = '#E1856C';
 
 const raw_data = _raw_data;
 
@@ -46,8 +50,9 @@ export default function App() {
 
     const newEdge = [...new Set(edges)].map((d) => {
       const key = `${d.source}-${d.target}`;
+      // const weight = edgesWithAttributes[key]?.weight;
       return edgesWithAttributes[key] || d;
-    });
+    })// .filter(Boolean);
 
     const filteredNodes = Object.values(nodesWithAttributes).filter((n) =>
       nodesWithEdge.has(n.id)
@@ -55,7 +60,6 @@ export default function App() {
 
     return [filteredNodes, newEdge];
   }, [raw_data]);
-  console.log(filteredEdges.length);
 
   const handleZoom = React.useCallback((node) => {
     // Aim at node from outside it
@@ -80,6 +84,15 @@ export default function App() {
     // .distance(link => 100)
     // .strength(link => 30)
   }, []);
+
+  const nodeThreeObject = React.useCallback((node) => {
+      // Create a sphere geometry, where the radius is based on the pagerank_score
+      const geometry = new THREE.SphereGeometry((node.pagerank_score ?? 1) * 10, 32, 32);
+      const material = new THREE.MeshPhongMaterial({
+        color: node.fraud ? RELATIONALAI_ORANGE : "#DDD",
+      });
+      return new THREE.Mesh(geometry, material);
+  });
 
   const handleNodeColor = React.useCallback((node) => {
     const sprite = new SpriteText(node.label);
@@ -123,25 +136,55 @@ export default function App() {
     return sprite;
   }, []);
 
+  const linkWidth = React.useCallback((link) => {
+    if (link.weight) {
+      return Math.round(5 * link.weight);
+    } else {
+      return 1;
+    }
+  }, []);
+  
+  const [cooldownTicks, setCooldownTicks] = React.useState(undefined);
+
+  useEffect(() => {
+    setTimeout(() => {
+      // setCooldownTicks(0);
+    }, 1000);
+  }, []);
+
+  const linkColors = new Float32Array([
+    255, 255, 255, 1, // source
+    255, 255, 255, 0  // target
+  ]);
+
+  const linkThreeObject = React.useCallback((link) => {
+    const material = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true });
+    const geometry = new THREE.BufferGeometry();
+    // geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
+    // geometry.setAttribute('color', new THREE.BufferAttribute(linkColors, 4));
+    return new THREE.Line(geometry, material);
+  }, []);
+
   const CameraOrbit = React.memo(() => {
     return (
       <ForceGraph3D
         ref={fgRef}
-        backgroundColor="#F5F5F5"
+        backgroundColor={RELATIONALAI_BLUE}
         graphData={{
           nodes: filteredNodes,
           links: filteredEdges,
         }}
-        nodeLabel={() => ""}
+        // nodeLabel={() => ""}
         nodeThreeObjectExtend={false}
-        nodeThreeObject={handleNodeColor}
+        nodeThreeObject={nodeThreeObject}
         // link props
         // linkDirectionalParticleColor={() => "blue"}
         // linkDirectionalParticleWidth={3}
         // linkHoverPrecision={10}
         linkDirectionalParticles={1}
         linkDirectionalParticleWidth={1}
-        linkOpacity={1}
+        linkOpacity={0.2}
+        linkWidth={linkWidth}
         linkDirectionalArrowLength={2}
         linkDirectionalArrowRelPos={1}
         linkColor={(link) => {
@@ -152,13 +195,7 @@ export default function App() {
           }
         }}
         linkThreeObjectExtend={true}
-        linkThreeObject={(link) => {
-          // extend link with text sprite
-          const sprite = new SpriteText(link.label || "");
-          sprite.color = link.fontcolor || "black";
-          sprite.textHeight = 1.5;
-          return sprite;
-        }}
+        linkThreeObject={linkThreeObject}
         linkPositionUpdate={(sprite, { start, end }) => {
           const middlePos = Object.assign(
             ...["x", "y", "z"].map((c) => ({
@@ -169,7 +206,7 @@ export default function App() {
         }}
         // loading optimization
         // warmupTicks={100}
-        // cooldownTicks={0}
+        cooldownTicks={cooldownTicks}
         onNodeClick={handleZoom}
       />
     );
@@ -193,6 +230,13 @@ export default function App() {
 
   return (
     <div className="App">
+      <img style={{
+        width: 200,
+        position: "absolute",
+        top: 10,
+        left: 10,
+        zIndex: 100,
+      }} src={"logo.svg"} alt="RelationalAI Logo"/>
       <Container>
       </Container>
       <CameraOrbit />
