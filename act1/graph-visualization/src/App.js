@@ -5,7 +5,7 @@ import ForceGraph3D from "react-force-graph-3d";
 import styled from "styled-components";
 import * as THREE from "three";
 
-const RELATIONALAI_BLUE = "#090F4A";
+const RELATIONALAI_BLUE = "#1B2A44";
 const RELATIONALAI_ORANGE = "#E1856C";
 
 const raw_data = _raw_data;
@@ -282,6 +282,7 @@ const ControlPanel = ({ showFraud, toggleFraud, showPagerank, togglePagerank }) 
           borderRadius: 5,
           padding: 10,
           cursor: "pointer",
+          opacity: 0,
         }}
         onClick={toggleFraud}
       >
@@ -298,6 +299,7 @@ const ControlPanel = ({ showFraud, toggleFraud, showPagerank, togglePagerank }) 
           borderRadius: 5,
           padding: 10,
           cursor: "pointer",
+          opacity: 0,
         }}
         onClick={togglePagerank}
       >

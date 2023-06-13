@@ -1,0 +1,54 @@
+<head>
+    <style> body { 
+        margin: 0; 
+        background-color: #1B2A44;
+    } </style>
+  
+    <script src="//unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="//unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="//unpkg.com/@babel/standalone"></script>
+  
+    <script src="//unpkg.com/react-force-graph-2d"></script>
+  
+    <script>
+        function genRandomTree(N = 2000, reverse = false) {
+            return {
+                nodes: [...Array(N).keys()].map(i => ({ id: i })),
+                links: [...Array(N).keys()]
+                .filter(id => id)
+                .map(id => ({
+                    [reverse ? 'target' : 'source']: id,
+                    [reverse ? 'source' : 'target']: Math.round(Math.random() * (id-1)),
+                    color: Math.random() > 0.5 ? "#7EB9C1" : "#BAAAE2"
+                }))
+            };
+            }
+    </script>
+  </head>
+  
+  <body>
+  <div id="graph"></div>
+  
+  <script type="text/jsx">
+    const { useRef } = React;
+  
+    const data = genRandomTree();
+    const Graph = () => {
+      const fgRef = useRef();
+  
+      return <ForceGraph2D
+        ref={fgRef}
+        graphData={data}
+
+        nodeColor={() => "#E38E76"}
+        linkColor={(link) => link.color}
+        nodeRelSize={8}
+      />;
+    };
+  
+    ReactDOM.render(
+      <Graph />,
+      document.getElementById('graph')
+    );
+  </script>
+  </body>
