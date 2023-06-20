@@ -282,7 +282,6 @@ const ControlPanel = ({ showFraud, toggleFraud, showPagerank, togglePagerank }) 
           borderRadius: 5,
           padding: 10,
           cursor: "pointer",
-          opacity: 0,
         }}
         onClick={toggleFraud}
       >
@@ -299,7 +298,6 @@ const ControlPanel = ({ showFraud, toggleFraud, showPagerank, togglePagerank }) 
           borderRadius: 5,
           padding: 10,
           cursor: "pointer",
-          opacity: 0,
         }}
         onClick={togglePagerank}
       >
