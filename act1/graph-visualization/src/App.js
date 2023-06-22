@@ -209,6 +209,16 @@ export default function App() {
     [showFraud, showPagerank, filteredNodes, filteredEdges]
   );
 
+  useEffect(() => {
+    if (fgRef.current) {
+      fgRef.current.cameraPosition(
+        { x: 100, y: 0, z: 100 }, // new position
+        { x: 0, y: 0, z: 0 }, // lookAt ({ x, y, z })
+        1000 // ms transition duration
+      );
+    }
+  }, [fgRef]);
+
   return (
     <div className="App">
       <ControlPanel showFraud={showFraud} toggleFraud={toggleFraud} showPagerank={showPagerank} togglePagerank={togglePagerank}/>
